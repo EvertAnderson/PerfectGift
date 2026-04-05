@@ -1,0 +1,58 @@
+.flower-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.protea-svg {
+  width: min(420px, 90vw);
+  height: auto;
+  filter: drop-shadow(0 0 24px rgba(233, 30, 140, 0.35));
+}
+
+/* Bracts appear via a scale + fade-in per path */
+.bract-path {
+  opacity: 0;
+  transform-origin: center center;
+}
+
+.bract-path--active {
+  animation: bractReveal ease-out forwards;
+}
+
+@keyframes bractReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stem fades in fast */
+.stem {
+  opacity: 0;
+}
+
+.stem--active {
+  animation: fadeInDome 0.9s ease-out 0s forwards;
+}
+
+/* Dome florets */
+.dome-florets {
+  opacity: 0;
+}
+
+/* (dome is controlled inline with animation shorthand) */
+
+@keyframes fadeInDome {
+  0%   { opacity: 0; transform: scale(0.6); }
+  100% { opacity: 1; transform: scale(1); }
+}

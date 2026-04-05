@@ -1,0 +1,37 @@
+.petal-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 0.8s ease-out;
+}
+
+.petal-curtain--fading {
+  opacity: 0;
+}
+
+.petal {
+  position: absolute;
+  top: -30px;
+  border-radius: 50% 10% 50% 10%;
+  opacity: 0.85;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg) skewX(0deg);
+    opacity: 0.9;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(110vh) rotate(var(--spin, 180deg)) skewX(15deg);
+    opacity: 0.4;
+  }
+}

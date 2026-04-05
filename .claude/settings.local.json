@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export NVM_DIR=\"$HOME/.nvm\")",
+      "Bash(. \"$NVM_DIR/nvm.sh\")",
+      "Bash(nvm use:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
