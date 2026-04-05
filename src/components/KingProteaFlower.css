@@ -6,7 +6,7 @@
 }
 
 .protea-svg {
-  width: min(420px, 88vw);
+  width: min(546px, 90vw);
   height: auto;
   filter: drop-shadow(0 0 28px rgba(233, 30, 140, 0.38))
           drop-shadow(0 0 8px rgba(173, 20, 87, 0.25));
@@ -43,23 +43,14 @@
   100% { opacity: 1; transform: scale(1);    }
 }
 
-/* ── Sparkles ────────────────────────────────────────────────────────────── */
-.sparkles {
+/* ── Orbiting stars ──────────────────────────────────────────────────────── */
+/* The actual orbit motion is done via SVG SMIL <animateTransform>.
+   CSS only handles the fade-in. */
+.orbiting-stars {
   opacity: 0;
-  transition: opacity 1.5s ease-out;
+  transition: opacity 1.8s ease-out;
 }
 
-.sparkles--visible {
+.orbiting-stars--visible {
   opacity: 1;
-}
-
-.sparkle-item {
-  animation: twinkle 2.4s ease-in-out infinite alternate;
-  transform-origin: center;
-}
-
-@keyframes twinkle {
-  0%   { opacity: 0.2; transform: scale(0.7) rotate(0deg);   }
-  50%  { opacity: 0.9; transform: scale(1.1) rotate(22deg);  }
-  100% { opacity: 0.4; transform: scale(0.8) rotate(45deg);  }
 }

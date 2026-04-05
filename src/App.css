@@ -72,8 +72,8 @@ body {
 /* ── View container + panels ── */
 .view-container {
   position: relative;
-  width: min(460px, 90vw);
-  height: min(460px, 90vw);
+  width: min(546px, 90vw);
+  height: min(546px, 90vw);
 }
 
 .view-panel {

@@ -8,15 +8,16 @@ import './KingProteaFlower3D.css';
 const DOME_RADIUS = 0.88;
 
 // Each layer: polar tilt from Y-up (0=pointing up, 90=horizontal)
+// Colors match the real King Protea: deep ruby/crimson outer → vivid magenta → pale-pink center
 const BRACT_LAYERS = [
-  { count: 16, thetaDeg: 78, len: 2.30, w: 0.72, color: '#3b0020', emissive: '#1a0010', offset:  0 },
-  { count: 14, thetaDeg: 64, len: 2.00, w: 0.62, color: '#5c0032', emissive: '#1f000f', offset: 12 },
-  { count: 12, thetaDeg: 50, len: 1.72, w: 0.52, color: '#8b0042', emissive: '#280015', offset:  8 },
-  { count: 11, thetaDeg: 36, len: 1.46, w: 0.44, color: '#b8175a', emissive: '#35001a', offset:  5 },
-  { count: 10, thetaDeg: 22, len: 1.20, w: 0.36, color: '#e01e88', emissive: '#400020', offset:  3 },
-  { count:  9, thetaDeg: 10, len: 0.94, w: 0.28, color: '#f06292', emissive: '#500028', offset:  0 },
-  // Innermost pale (nearly vertical, slightly creamy)
-  { count:  8, thetaDeg:  3, len: 0.68, w: 0.20, color: '#f8bbd0', emissive: '#500030', offset:  0 },
+  { count: 16, thetaDeg: 78, len: 2.30, w: 0.72, color: '#8B1535', emissive: '#3B0012', offset:  0 },
+  { count: 14, thetaDeg: 64, len: 2.00, w: 0.62, color: '#A81A48', emissive: '#480018', offset: 12 },
+  { count: 12, thetaDeg: 50, len: 1.72, w: 0.52, color: '#C8225E', emissive: '#570025', offset:  8 },
+  { count: 11, thetaDeg: 36, len: 1.46, w: 0.44, color: '#DD2872', emissive: '#650030', offset:  5 },
+  { count: 10, thetaDeg: 22, len: 1.20, w: 0.36, color: '#EE3585', emissive: '#700038', offset:  3 },
+  { count:  9, thetaDeg: 10, len: 0.94, w: 0.28, color: '#F55095', emissive: '#780040', offset:  0 },
+  // Innermost — pale creamy pink
+  { count:  8, thetaDeg:  3, len: 0.68, w: 0.20, color: '#FABACA', emissive: '#880048', offset:  0 },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -48,9 +49,9 @@ function ProteaBract({ phi, theta, len, w, color, emissive }) {
   const material = useMemo(() => new THREE.MeshStandardMaterial({
     color:     new THREE.Color(color),
     emissive:  new THREE.Color(emissive),
-    emissiveIntensity: 0.35,
-    roughness: 0.68,
-    metalness: 0.04,
+    emissiveIntensity: 0.45,
+    roughness: 0.50,   // silkier surface — catches light better
+    metalness: 0.06,
     side: THREE.DoubleSide,
   }), [color, emissive]);
 
@@ -254,8 +255,8 @@ function FlowerGroup({ active }) {
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
-    // Auto-rotate
-    groupRef.current.rotation.y += delta * 0.28;
+    // Auto-rotate only on Y — keep X tilt constant (bouquet angle)
+    groupRef.current.rotation.y += delta * 0.26;
     // Scale-in entrance
     if (active && progress.current < 1) {
       progress.current = Math.min(1, progress.current + delta * 0.9);
@@ -264,8 +265,9 @@ function FlowerGroup({ active }) {
     }
   });
 
+  // No X tilt — dome faces straight up so camera-from-above sees it head-on
   return (
-    <group ref={groupRef} scale={0} position={[0, 0.5, 0]}>
+    <group ref={groupRef} scale={0} position={[0, 0.3, 0]}>
       <BractRings />
       <Dome />
       <Stem />
@@ -277,25 +279,30 @@ function FlowerGroup({ active }) {
 function SceneLights() {
   return (
     <>
-      <ambientLight color="#1c0012" intensity={2.5} />
-      {/* Main pink key light — above-front */}
-      <pointLight color="#ff4499" intensity={18} position={[0, 5, 4]} distance={18} decay={2} />
-      {/* Warm amber fill — right side */}
-      <pointLight color="#ffaa44" intensity={8}  position={[5, 2, 0]} distance={14} decay={2} />
-      {/* Purple rim light — behind */}
-      <pointLight color="#9933ee" intensity={5}  position={[-4, 1, -5]} distance={14} decay={2} />
-      {/* Magenta under-fill — below */}
-      <pointLight color="#ff66aa" intensity={6}  position={[0, -4, 2]} distance={12} decay={2} />
-      {/* Bright top accent */}
+      {/* Bright warm ambient — no more pitch-black zones */}
+      <ambientLight color="#3a1020" intensity={5} />
+      {/* Main key: warm-white directly above — hits dome top and outer bracts */}
+      <directionalLight color="#fff8f0" intensity={5.5} position={[1, 10, 3]} castShadow
+        shadow-mapSize={[512, 512]} />
+      {/* Hot-pink overhead fill — vivid color as seen from above */}
+      <pointLight color="#ff3399" intensity={28} position={[0, 8, 2]} distance={22} decay={2} />
+      {/* Warm crimson from upper-right — ruby tones on bracts */}
+      <pointLight color="#ff5522" intensity={16} position={[6, 6, 2]} distance={20} decay={2} />
+      {/* Magenta from upper-left */}
+      <pointLight color="#ee22cc" intensity={14} position={[-5, 6, 1]} distance={18} decay={2} />
+      {/* Purple rim from below — gives depth to hanging bracts */}
+      <pointLight color="#6622ee" intensity={7}  position={[0, -5, 0]} distance={14} decay={2} />
+      {/* Side fill so bracts aren't dark on their outer faces */}
+      <pointLight color="#ff88bb" intensity={10} position={[0, 1, 7]} distance={16} decay={2} />
+      {/* Tight spotlight from above — bright dome highlight */}
       <spotLight
-        color="#ffccee"
-        intensity={25}
-        position={[0, 9, 2]}
-        angle={0.35}
-        penumbra={0.7}
-        distance={20}
-        castShadow
-        shadow-mapSize={[512, 512]}
+        color="#ffeeff"
+        intensity={40}
+        position={[0, 11, 1]}
+        angle={0.22}
+        penumbra={0.6}
+        distance={24}
+        castShadow={false}
       />
     </>
   );
@@ -306,7 +313,7 @@ function KingProteaFlower3D({ active }) {
   return (
     <div className="flower-3d-wrap">
       <Canvas
-        camera={{ position: [0, 1.8, 7], fov: 38 }}
+        camera={{ position: [0, 7, 4], fov: 46 }}
         gl={{ antialias: true, alpha: true }}
         shadows
         style={{ background: 'transparent' }}
@@ -319,7 +326,7 @@ function KingProteaFlower3D({ active }) {
           minDistance={3.5}
           maxDistance={14}
           enablePan={false}
-          target={[0, 0.4, 0]}
+          target={[0, 0.3, 0]}
         />
         <Stars
           radius={80} depth={40} count={900}

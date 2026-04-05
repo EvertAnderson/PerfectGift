@@ -246,35 +246,47 @@ function StemAndLeaves({ active }) {
   );
 }
 
-// ── Sparkles ─────────────────────────────────────────────────────────────────
-function Sparkles({ visible }) {
-  const sparks = useMemo(() => [
-    { x: 85,  y: 95,  s: 7,  d: 0.0 },
-    { x: 315, y: 80,  s: 9,  d: 0.3 },
-    { x: 60,  y: 200, s: 6,  d: 0.6 },
-    { x: 340, y: 195, s: 8,  d: 0.2 },
-    { x: 130, y: 50,  s: 5,  d: 0.9 },
-    { x: 270, y: 45,  s: 6,  d: 0.5 },
-    { x: 360, y: 300, s: 7,  d: 0.8 },
-    { x: 50,  y: 310, s: 5,  d: 0.1 },
-    { x: 180, y: 30,  s: 8,  d: 0.4 },
-    { x: 310, y: 340, s: 6,  d: 0.7 },
-  ], []);
+// ── Orbiting stars — each uses SMIL animateTransform to orbit around the center ─
+// Stars start at evenly spaced angles and orbit continuously at different speeds.
+const ORBIT_STARS = [
+  { startDeg:   0, r: 176, size: 7.0, dur: 14, color: '#f48fb1' },
+  { startDeg:  45, r: 168, size: 5.5, dur: 10, color: '#f8bbd0' },
+  { startDeg:  90, r: 179, size: 8.5, dur: 17, color: '#ec407a' },
+  { startDeg: 135, r: 170, size: 6.0, dur: 12, color: '#f48fb1' },
+  { startDeg: 180, r: 176, size: 7.5, dur: 15, color: '#f8bbd0' },
+  { startDeg: 225, r: 166, size: 5.0, dur: 11, color: '#f06292' },
+  { startDeg: 270, r: 179, size: 8.0, dur: 18, color: '#ec407a' },
+  { startDeg: 315, r: 171, size: 6.5, dur: 13, color: '#f48fb1' },
+];
 
+function OrbitingStars({ visible }) {
   return (
-    <g className={`sparkles ${visible ? 'sparkles--visible' : ''}`}>
-      {sparks.map((sp, i) => (
-        <g key={i} transform={`translate(${sp.x},${sp.y})`}
-          style={{ animationDelay: `${sp.d}s` }}
-          className="sparkle-item">
-          {/* 4-pointed star */}
-          <line x1={0} y1={-sp.s} x2={0} y2={sp.s} stroke="#f48fb1" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1={-sp.s} y1={0} x2={sp.s} y2={0} stroke="#f48fb1" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1={-sp.s * 0.6} y1={-sp.s * 0.6} x2={sp.s * 0.6} y2={sp.s * 0.6}
-            stroke="#fce4ec" strokeWidth="0.9" strokeLinecap="round" />
-          <line x1={sp.s * 0.6} y1={-sp.s * 0.6} x2={-sp.s * 0.6} y2={sp.s * 0.6}
-            stroke="#fce4ec" strokeWidth="0.9" strokeLinecap="round" />
-          <circle r="1.5" fill="#fff8e1" />
+    <g className={`orbiting-stars ${visible ? 'orbiting-stars--visible' : ''}`}>
+      {ORBIT_STARS.map((s, i) => (
+        /* Each <g> is rotated around (CX,CY) by animateTransform.
+           The star shape is translated to (CX+r, CY) so it sits on the orbit circle
+           before the rotation is applied. */
+        <g key={i}>
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from={`${s.startDeg} ${CX} ${CY}`}
+            to={`${s.startDeg + 360} ${CX} ${CY}`}
+            dur={`${s.dur}s`}
+            repeatCount="indefinite"
+          />
+          <g transform={`translate(${CX + s.r},${CY})`}>
+            {/* 4-pointed star */}
+            <line x1={0} y1={-s.size} x2={0} y2={s.size}
+              stroke={s.color} strokeWidth="1.8" strokeLinecap="round" />
+            <line x1={-s.size} y1={0} x2={s.size} y2={0}
+              stroke={s.color} strokeWidth="1.8" strokeLinecap="round" />
+            <line x1={-s.size * .62} y1={-s.size * .62} x2={s.size * .62} y2={s.size * .62}
+              stroke="#fce4ec" strokeWidth="1.1" strokeLinecap="round" opacity="0.85" />
+            <line x1={s.size * .62} y1={-s.size * .62} x2={-s.size * .62} y2={s.size * .62}
+              stroke="#fce4ec" strokeWidth="1.1" strokeLinecap="round" opacity="0.85" />
+            <circle r={s.size * 0.22} fill="#fff8e1" />
+          </g>
         </g>
       ))}
     </g>
@@ -415,8 +427,8 @@ function KingProteaFlower({ active, showSparkles }) {
           </g>
         )}
 
-        {/* Sparkles */}
-        <Sparkles visible={showSparkles} />
+        {/* Orbiting stars */}
+        <OrbitingStars visible={showSparkles} />
       </svg>
     </div>
   );

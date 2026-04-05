@@ -1,6 +1,6 @@
 .flower-3d-wrap {
-  width: min(480px, 92vw);
-  height: min(480px, 92vw);
+  width: min(546px, 90vw);
+  height: min(546px, 90vw);
   position: relative;
   border-radius: 50%;
   overflow: hidden;
