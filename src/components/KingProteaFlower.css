@@ -6,12 +6,13 @@
 }
 
 .protea-svg {
-  width: min(420px, 90vw);
+  width: min(420px, 88vw);
   height: auto;
-  filter: drop-shadow(0 0 24px rgba(233, 30, 140, 0.35));
+  filter: drop-shadow(0 0 28px rgba(233, 30, 140, 0.38))
+          drop-shadow(0 0 8px rgba(173, 20, 87, 0.25));
 }
 
-/* Bracts appear via a scale + fade-in per path */
+/* ── Bracts ──────────────────────────────────────────────────────────────── */
 .bract-path {
   opacity: 0;
   transform-origin: center center;
@@ -22,37 +23,43 @@
 }
 
 @keyframes bractReveal {
-  0% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  60% {
-    opacity: 0.9;
-    transform: scale(1.04);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  0%   { opacity: 0;   transform: scale(0.25); }
+  55%  { opacity: 0.9; transform: scale(1.03); }
+  100% { opacity: 1;   transform: scale(1);    }
 }
 
-/* Stem fades in fast */
+/* ── Stem ────────────────────────────────────────────────────────────────── */
 .stem {
   opacity: 0;
 }
 
 .stem--active {
-  animation: fadeInDome 0.9s ease-out 0s forwards;
+  animation: fadeInDome 0.7s ease-out 0s forwards;
 }
 
-/* Dome florets */
-.dome-florets {
-  opacity: 0;
-}
-
-/* (dome is controlled inline with animation shorthand) */
-
+/* ── Dome ────────────────────────────────────────────────────────────────── */
 @keyframes fadeInDome {
-  0%   { opacity: 0; transform: scale(0.6); }
-  100% { opacity: 1; transform: scale(1); }
+  0%   { opacity: 0; transform: scale(0.55); }
+  100% { opacity: 1; transform: scale(1);    }
+}
+
+/* ── Sparkles ────────────────────────────────────────────────────────────── */
+.sparkles {
+  opacity: 0;
+  transition: opacity 1.5s ease-out;
+}
+
+.sparkles--visible {
+  opacity: 1;
+}
+
+.sparkle-item {
+  animation: twinkle 2.4s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes twinkle {
+  0%   { opacity: 0.2; transform: scale(0.7) rotate(0deg);   }
+  50%  { opacity: 0.9; transform: scale(1.1) rotate(22deg);  }
+  100% { opacity: 0.4; transform: scale(0.8) rotate(45deg);  }
 }

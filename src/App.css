@@ -14,11 +14,12 @@ body {
   overflow: hidden;
 }
 
+/* ── Root ── */
 .app-root {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(ellipse at 50% 50%, #1a0014 0%, #0d0008 70%);
+  background: radial-gradient(ellipse at 50% 45%, #1a0014 0%, #0d0008 70%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,59 +27,97 @@ body {
   font-family: 'Georgia', serif;
 }
 
+/* Ambient glow pulse */
 .bg-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 600px 500px at 50% 50%, rgba(140, 0, 70, 0.18) 0%, transparent 70%);
-  animation: glowPulse 4s ease-in-out infinite alternate;
+  background:
+    radial-gradient(ellipse 620px 520px at 50% 46%, rgba(140, 0, 70, 0.16) 0%, transparent 70%);
+  animation: glowPulse 4.5s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
 @keyframes glowPulse {
-  from { opacity: 0.6; }
-  to   { opacity: 1;   }
+  from { opacity: 0.55; }
+  to   { opacity: 1.00; }
 }
 
+/* ── Dropdown fade-in ── */
+.dropdown-wrap {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+  pointer-events: none;
+}
+.dropdown-wrap--visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Stage ── */
 .stage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
   opacity: 0;
   transform: scale(0.96);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
   z-index: 10;
 }
-
 .stage--visible {
   opacity: 1;
   transform: scale(1);
 }
 
+/* ── View container + panels ── */
+.view-container {
+  position: relative;
+  width: min(460px, 90vw);
+  height: min(460px, 90vw);
+}
+
+.view-panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-panel--active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Birthday message ── */
 .birthday-msg {
   text-align: center;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 1s ease-out, transform 1s ease-out;
+  transform: translateY(14px);
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
 }
-
 .birthday-msg--visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 .birthday-line1 {
-  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-size: clamp(1.7rem, 5vw, 2.8rem);
   font-weight: 300;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: #f8bbd0;
-  text-shadow: 0 0 30px rgba(233, 30, 140, 0.7), 0 0 60px rgba(233, 30, 140, 0.3);
+  text-shadow:
+    0 0 28px rgba(233, 30, 140, 0.75),
+    0 0 60px rgba(233, 30, 140, 0.28);
 }
 
 .birthday-line2 {
-  font-size: clamp(0.85rem, 2.5vw, 1.1rem);
-  letter-spacing: 0.3em;
+  font-size: clamp(0.78rem, 2.2vw, 1rem);
+  letter-spacing: 0.32em;
   color: #f48fb1;
-  margin-top: 0.5rem;
-  opacity: 0.8;
+  margin-top: 0.55rem;
+  opacity: 0.78;
 }
