@@ -1,0 +1,79 @@
+/* ── Wrapper ──────────────────────────────────────────────────────────────── */
+.deco-border {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2.8s ease-out;
+}
+
+.deco-border--visible {
+  opacity: 1;
+}
+
+/* Double-line frame using pseudo-elements */
+.deco-border::before {
+  content: '';
+  position: fixed;
+  inset: 14px;
+  border: 1px solid rgba(244, 143, 177, 0.38);
+}
+
+.deco-border::after {
+  content: '';
+  position: fixed;
+  inset: 20px;
+  border: 1px solid rgba(244, 143, 177, 0.18);
+}
+
+/* ── Corner pieces ────────────────────────────────────────────────────────── */
+.corner-svg {
+  position: fixed;
+  width: 162px;
+  height: 162px;
+  overflow: visible;
+}
+
+.corner-tl { top: 0; left: 0; }
+.corner-tr { top: 0; right: 0;    transform: scaleX(-1); }
+.corner-bl { bottom: 0; left: 0;  transform: scaleY(-1); }
+.corner-br { bottom: 0; right: 0; transform: scale(-1, -1); }
+
+/* ── Top / bottom centre ornaments ──────────────────────────────────────── */
+.centre-ornament {
+  position: fixed;
+  left: 50%;
+  width: 260px;
+  height: 72px;
+  overflow: visible;
+}
+
+.centre-top {
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.centre-bottom {
+  bottom: 0;
+  transform: translateX(-50%) scaleY(-1);
+}
+
+/* ── Left / right side ornaments ─────────────────────────────────────────── */
+.side-ornament {
+  position: fixed;
+  top: 50%;
+  width: 65px;
+  height: 220px;
+  overflow: visible;
+}
+
+.side-left  { left: 0;  transform: translateY(-50%); }
+.side-right { right: 0; transform: translateY(-50%) scaleX(-1); }
+
+/* ── Responsive: hide side ornaments on narrow screens ───────────────────── */
+@media (max-width: 600px) {
+  .side-ornament   { display: none; }
+  .centre-ornament { display: none; }
+  .corner-svg      { width: 120px; height: 120px; }
+}

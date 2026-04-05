@@ -192,8 +192,103 @@ function Dome() {
         <meshStandardMaterial color="#e91e8c" emissive="#e91e8c"
           emissiveIntensity={1.2} roughness={0.3} transparent opacity={0.6} />
       </mesh>
+
+      {/* Receptacle — green cup at the base of the flower head */}
+      <mesh position={[0, -DOME_RADIUS * 0.08, 0]}>
+        <cylinderGeometry args={[DOME_RADIUS * 0.70, DOME_RADIUS * 0.90, 0.28, 28]} />
+        <meshStandardMaterial color="#2a5430" roughness={0.84} metalness={0.0} />
+      </mesh>
+      {/* Receptacle rim highlight */}
+      <mesh position={[0, -DOME_RADIUS * 0.22, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[DOME_RADIUS * 0.80, 0.025, 6, 32]} />
+        <meshStandardMaterial color="#3a7040" emissive="#183018" emissiveIntensity={0.4} roughness={0.7} />
+      </mesh>
     </group>
   );
+}
+
+// ── Stipular bracts — green calyx at base of flower head ─────────────────────
+function StipularBracts() {
+  const geo = useMemo(() => {
+    const shape = createBractShape(0.90, 0.36);
+    return new THREE.ExtrudeGeometry(shape, {
+      depth: 0.05, bevelEnabled: true,
+      bevelThickness: 0.007, bevelSize: 0.01, bevelSegments: 2,
+    });
+  }, []);
+
+  const mat = useMemo(() => new THREE.MeshStandardMaterial({
+    color: '#2e5e30', emissive: '#0a1a0a', emissiveIntensity: 0.18,
+    roughness: 0.76, metalness: 0.0, side: THREE.DoubleSide,
+  }), []);
+
+  const bracts = useMemo(() => {
+    const theta = (86.5 * Math.PI) / 180;
+    const up = new THREE.Vector3(0, 1, 0);
+    return Array.from({ length: 14 }, (_, i) => {
+      const phi = (2 * Math.PI / 14) * i + (Math.PI / 28);
+      const dir = new THREE.Vector3(
+        Math.sin(theta) * Math.cos(phi),
+        Math.cos(theta),
+        Math.sin(theta) * Math.sin(phi)
+      );
+      return {
+        pos: dir.clone().multiplyScalar(DOME_RADIUS * 0.83),
+        quat: new THREE.Quaternion().setFromUnitVectors(up, dir),
+      };
+    });
+  }, []);
+
+  return (
+    <group>
+      {bracts.map((b, i) => (
+        <mesh key={i} geometry={geo} material={mat}
+          position={b.pos} quaternion={b.quat} castShadow />
+      ))}
+    </group>
+  );
+}
+
+// ── Floating pollen particles ─────────────────────────────────────────────────
+function PollenParticles({ count = 55 }) {
+  const meshRef = useRef();
+
+  const particles = useMemo(() => Array.from({ length: count }, () => ({
+    baseAngle: Math.random() * Math.PI * 2,
+    r:         0.7 + Math.random() * 3.0,
+    baseY:    -0.6 + Math.random() * 3.4,
+    ySpeed:    0.07 + Math.random() * 0.20,
+    rotSpeed:  (Math.random() > 0.5 ? 1 : -1) * (0.06 + Math.random() * 0.18),
+    yPhase:    Math.random() * Math.PI * 2,
+    size:      0.011 + Math.random() * 0.017,
+    opacity:   0.55 + Math.random() * 0.45,
+  })), [count]);
+
+  const geo = useMemo(() => new THREE.SphereGeometry(1, 4, 4), []);
+  const mat = useMemo(() => new THREE.MeshStandardMaterial({
+    color: '#ffe880', emissive: '#ffd040', emissiveIntensity: 2.4,
+    roughness: 0.2, transparent: true, opacity: 0.85,
+  }), []);
+
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+    const t = clock.getElapsedTime();
+    const dummy = new THREE.Object3D();
+    particles.forEach((p, i) => {
+      const angle = p.baseAngle + t * p.rotSpeed;
+      dummy.position.set(
+        p.r * Math.cos(angle),
+        p.baseY + Math.sin(t * p.ySpeed + p.yPhase) * 0.38,
+        p.r * Math.sin(angle)
+      );
+      dummy.scale.setScalar(p.size * (0.88 + 0.24 * Math.sin(t * p.ySpeed * 0.6 + p.yPhase)));
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    });
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  return <instancedMesh ref={meshRef} args={[geo, mat, count]} />;
 }
 
 // ── Stem + 3D leaves ─────────────────────────────────────────────────────────
@@ -244,6 +339,18 @@ function Stem() {
         position={[0.06, -2.2, 0]}
         rotation={[0, 0, -Math.PI * 0.1]}
         castShadow />
+
+      {/* Stem nodes — small spherical protrusions at leaf attachment points */}
+      {[
+        { pos: [ 0.05, -1.15, 0], r: 0.088 },
+        { pos: [-0.02, -1.92, 0], r: 0.080 },
+        { pos: [ 0.02, -2.65, 0], r: 0.072 },
+      ].map(({ pos, r }, i) => (
+        <mesh key={i} position={pos}>
+          <sphereGeometry args={[r, 9, 9]} />
+          <meshStandardMaterial color="#1b5e20" roughness={0.82} />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -265,12 +372,13 @@ function FlowerGroup({ active }) {
     }
   });
 
-  // No X tilt — dome faces straight up so camera-from-above sees it head-on
   return (
     <group ref={groupRef} scale={0} position={[0, 0.3, 0]}>
       <BractRings />
+      <StipularBracts />
       <Dome />
       <Stem />
+      <PollenParticles count={55} />
     </group>
   );
 }

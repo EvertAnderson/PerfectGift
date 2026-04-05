@@ -3,6 +3,7 @@ import PetalCurtain from './components/PetalCurtain';
 import KingProteaFlower from './components/KingProteaFlower';
 import KingProteaFlower3D from './components/KingProteaFlower3D';
 import ViewDropdown from './components/ViewDropdown';
+import DecorativeBorder from './components/DecorativeBorder';
 import './App.css';
 
 // Phases: 'curtain' → 'fade' → 'drawing' → 'complete'
@@ -24,6 +25,9 @@ function App() {
   return (
     <div className="app-root">
       <div className="bg-glow" />
+
+      {/* Decorative botanical border — fades in with the flower */}
+      <DecorativeBorder visible={stageVisible} />
 
       {/* Petal curtain */}
       <PetalCurtain
@@ -56,7 +60,7 @@ function App() {
         {/* Birthday message */}
         <div className={`birthday-msg ${msgVisible ? 'birthday-msg--visible' : ''}`}>
           <p className="birthday-line1">Feliz Cumpleaños Madeleine una hermosa King Protea</p>
-          <p className="birthday-line2">✦ con todo mi amor para una flor que no es frágil que el viento doblega, eres un belleza que nacio en el fuego del sol y la arena. ✦</p>
+          <p className="birthday-line2">✦ con todo mi amor para una flor que no es frágil al viento y se doblega, eres un belleza que nacio en el fuego del sol y la arena. ✦</p>
         </div>
       </div>
     </div>
