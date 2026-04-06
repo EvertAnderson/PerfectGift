@@ -60,7 +60,7 @@ function App() {
         {/* Birthday message */}
         <div className={`birthday-msg ${msgVisible ? 'birthday-msg--visible' : ''}`}>
           <p className="birthday-line1">Feliz Cumpleaños Madeleine una hermosa Protea King</p>
-          <p className="birthday-line2">✦ con todo mi amor para una flor que no es frágil al viento y se doblega, eres un belleza que nacio en el fuego del sol y la arena. ✦</p>
+          <p className="birthday-line2">✦ Llevas una corona de valentía que el viento no doblega. Eres mi flor majestuosa, nacida del fuego, el sol y la arena. Mi amor por ti es como tu naturaleza: salvaje, resistente y eterno. Te amo. ✦</p>
         </div>
       </div>
     </div>
